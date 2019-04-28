@@ -1,5 +1,11 @@
 #install.packages quantmod
 library(quantmod)
+#install.packages tidyverse
+library(lubridate)# for year 2019 <-> 108
+#install.packages jsonlite
+library(jsonlite)# for url json format
+
+source("func.R")
 
 stocknum = na.omit(get(getSymbols("2330.TW", from="2000-01-01" ,to=Sys.Date())))
 #sum(is.na(tw2330))
@@ -20,8 +26,7 @@ addBBands(draw="p")
 
 
 
-#install.packages jsonlite
-library(jsonlite)
+
 qdate <- '20170721'   
 qtype <- 'ALLBUT0999' 
 ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
@@ -53,7 +58,7 @@ if(jsondata$stat == "OK"){
 
 colnames(historyStock) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value")         
 #historyStock$Date <- sapply(historyStock$Date, CNV_DATE)         
-historyStock$Date <- as.Date(historyStock[, 1]) + (as.Date("2019-01-01") - as.Date("108-01-01")) - 1
+historyStock$Date <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
 historyStock$Open <- as.numeric(gsub(',', replacement = '', historyStock$Open))         
 historyStock$High <- as.numeric(gsub(',', replacement = '', historyStock$High))         
 historyStock$Low <- as.numeric(gsub(',', replacement = '', historyStock$Low))         
@@ -63,22 +68,5 @@ historyStock$Value <- as.numeric(gsub(',', replacement = '', historyStock$Value)
 # data frame to xts         
 historyStock_1 <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
 chartSeries(historyStock_1)
-class(historyStock$Date)
-class(historyStock_1[1])
-as.Date(historyStock$Date)
-historyStock$Date = as.Date(historyStock[, 1])+(as.Date("2019-01-01")-as.Date("108-01-01"))-1
-historyStock$Date
-class(historyStock[,1])
 
 
-for(i in c(1:30)){
-print(as.Date("2019-01-01", ) - 697979 - i*365)
-}
-
-#install.packages tidyverse
-library(lubridate)
-b <- ymd("2019-01-01")
-a <- year(b)
-a <- a-1911
-year(b) <- a
-b

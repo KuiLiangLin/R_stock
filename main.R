@@ -22,8 +22,8 @@ addBBands(draw="p")
 
 #install.packages jsonlite
 library(jsonlite)
-qdate <- '20170721'   #??????????????????
-qtype <- 'ALLBUT0999' #??????(???????????? ????????? ....etc)
+qdate <- '20170721'   
+qtype <- 'ALLBUT0999' 
 ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
 url <- paste0('http://www.twse.com.tw/exchangeReport/MI_INDEX?',
               'response=json&date=',qdate,'&type=',qtype,'&_=',ttime)
@@ -32,16 +32,16 @@ x <- fromJSON(url,flatten=T)
 x$data5
 
 
-url_2 = paste0('http://mops.twse.com.tw/mops/web/t05st22')
+url_2 <- paste0('http://mops.twse.com.tw/mops/web/t05st22')
 
-date_1 = '20190428'
-stockno = '2330'
+date_1 <- '20190428'
+stockno <- '2330'
 
-url_1 = paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
+url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
                'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
-jsondata = fromJSON(url_1)
+jsondata <- fromJSON(url_1)
 
-historyStock = NULL
+historyStock <- NULL
 if(jsondata$stat == "OK"){
   tmpStock <- data.frame(jsondata$data[, 1],  
                          jsondata$data[, 4:7],  

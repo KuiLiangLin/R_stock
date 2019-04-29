@@ -45,21 +45,20 @@ if( month(Sys.time()) >= 10){
   today <- paste0( year(Sys.time()), 0, month(Sys.time()), day(Sys.time()) )
 }
 
-source("func.R")
-date_set_all <- date_set_all()
+source("func.R"); date_set_all <- date_set_all(NULL)
 
 for(date_1 in date_set_all[1:10] ){
-Sys.sleep(runif(1,2,3))#randomly delay time
-url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
-               'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
-jsondata <- fromJSON(url_1)
-if(jsondata$stat == "OK"){
-  tmpStock <- data.frame(jsondata$data[, 1],  
-                         jsondata$data[, 4:7],  
-                         jsondata$data[, 2:3],     
-                         stringsAsFactors = FALSE)
-  historyStock <- rbind(historyStock, tmpStock) 
-}
+  Sys.sleep(runif(1,2,3))#randomly delay 1 time between 2 and 3 seconds 
+  url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
+                 'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
+  jsondata <- fromJSON(url_1)
+  if(jsondata$stat == "OK"){
+    tmpStock <- data.frame(jsondata$data[, 1],  
+                           jsondata$data[, 4:7],  
+                           jsondata$data[, 2:3],     
+                           stringsAsFactors = FALSE)
+    historyStock <- rbind(historyStock, tmpStock) 
+  }
 }
 
 colnames(historyStock) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value")         
@@ -75,5 +74,9 @@ historyStock <- na.omit(historyStock)
 # data frame to xts         
 historyStock_1 <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
 chartSeries(historyStock_1)
-
 #write.zoo(historyStock_1, file="2330.csv", sep=",")
+
+source("func.R"); rcsv <- read_csv_to_xts("2330.csv")
+chartSeries(rcsv)
+
+

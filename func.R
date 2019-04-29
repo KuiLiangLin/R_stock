@@ -5,14 +5,12 @@ library(jsonlite)
 
 ###############year_change <- function(x) ############################
 year_change_108_to_2019 <- function(x) {#2/29 is not allowed to transform
-  b <- ymd(x)
-  a <- year(b)
-  a <- a + 1911
-  year(b) <- a
-  return(b)
+  da <- ymd(x)
+  ye <- year(da)
+  ye <- ye + 1911
+  year(da) <- ye
+  return(da)
 }
-
-
 
 
 ###############date_set_all <- function(x) {############################
@@ -31,4 +29,12 @@ date_set_all <- function(x){
     }
   }
   return(dateset)
+}
+
+###############read_csv_to_xts <- function(x) {############################
+read_csv_to_xts <- function(x) {
+  rcsv <- read.csv(x)
+  colnames(rcsv) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value") 
+  rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1])) 
+  return(rcsv)
 }

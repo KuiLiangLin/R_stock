@@ -3,6 +3,7 @@ library(quantmod)
 library(lubridate)
 library(jsonlite)
 
+
 ###############year_change <- function(x) ############################
 year_change_108_to_2019 <- function(x) {#2/29 is not allowed to transform
   da <- ymd(x)

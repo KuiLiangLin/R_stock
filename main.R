@@ -1,9 +1,7 @@
-#install.packages quantmod
+#install.packages( c("jsonlite", "lubridate", "quantmod"))
 library(quantmod)
-#install.packages tidyverse
-library(lubridate)# for year 2019 <-> 108
-#install.packages jsonlite
-library(jsonlite)# for url json format
+library(lubridate)
+library(jsonlite)
 
 source("func.R")
 
@@ -11,7 +9,7 @@ source("func.R")
 ####################################yahoo stock####################################
 stockno <- '2330'
 for (stockno in c("2104.TW", "2330.TW", "2441.TW")){
-stocknum = na.omit(get(getSymbols(stockno, from="2000-01-01" ,to=Sys.Date())))
+stocknum <- na.omit(get(getSymbols(stockno, from="2000-01-01" ,to=Sys.Date())))
 #sum(is.na(tw2330))
 chartSeries(stocknum, from="2000-01-01" ,to=Sys.Date(),theme="black")
 
@@ -47,7 +45,11 @@ if( month(Sys.time()) >= 10){
   today <- paste0( year(Sys.time()), 0, month(Sys.time()), day(Sys.time()) )
 }
 
-for(date_1 in c('20190201','20190301',today)){
+source("func.R")
+date_set_all <- date_set_all()
+
+for(date_1 in date_set_all[1:10] ){
+Sys.sleep(runif(1,2,3))#randomly delay time
 url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
                'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
 jsondata <- fromJSON(url_1)
@@ -68,9 +70,10 @@ historyStock$High <- as.numeric(gsub(',', replacement = '', historyStock$High))
 historyStock$Low <- as.numeric(gsub(',', replacement = '', historyStock$Low))         
 historyStock$Close <- as.numeric(gsub(',', replacement = '', historyStock$Close))         
 historyStock$Volume <- as.numeric(gsub(',', replacement = '', historyStock$Volume))         
-historyStock$Value <- as.numeric(gsub(',', replacement = '', historyStock$Value))         
+historyStock$Value <- as.numeric(gsub(',', replacement = '', historyStock$Value))      
+historyStock <- na.omit(historyStock)
 # data frame to xts         
 historyStock_1 <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
 chartSeries(historyStock_1)
 
-
+#write.zoo(historyStock_1, file="2330.csv", sep=",")

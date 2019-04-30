@@ -54,7 +54,7 @@ for(date_1 in date_set_all ){
                            stringsAsFactors = FALSE)
     historyStock <- rbind(historyStock, tmpStock) 
   }
-  if( round(Len*100) < round((Len + 1/dim(new_data)[1])*100) ){
+  if( round(Len*100) < round((Len + 1/length(date_set_all)[1])*100) ){
     cat(">>>",round(Len*100),"%",sep = "") 
   }  
   Len <- Len + 1/length(date_set_all)
@@ -71,20 +71,21 @@ historyStock$Value <- as.numeric(gsub(',', replacement = '', historyStock$Value)
 historyStock <- na.omit(historyStock)
 # data frame to xts         
 stock_data <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
-rm(tmpStock, jsondata, date_1, Len, startyear, stockno, ttime, url_1, historyStock)
-chartSeries(historyStock_1)
+rm(tmpStock, jsondata, date_1, Len, startyear, ttime, url_1, historyStock)
+#chartSeries(stock_data)
 
 
 
+file_path <- paste0(getwd(), "/data/", stockno,".csv")
 ############### write files ############################
-# write.zoo(stock_data, file="2330.csv", sep=",")
-
+write.zoo(stock_data, file = file_path, sep=",")
 
 ############### read files ############################
-source("func.R"); rcsv <- read_csv_to_xts("2330.csv")
+source("func.R"); rcsv <- read_csv_to_xts(file_path)
 # chartSeries(rcsv)
 
 ############### update files ############################
 source("func.R"); update_rcsv <- xts_update(rcsv, stock_data)
-write.zoo(update_rcsv, file="2330.csv", sep=",")
+write.zoo(update_rcsv, file = file_path, sep=",")
+# chartSeries(update_rcsv)
 

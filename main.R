@@ -34,20 +34,15 @@ source("func.R")
 #               'response=json&date=',qdate,'&type=',qtype,'&_=',ttime)
 # url_2 <- paste0('http://mops.twse.com.tw/mops/web/t05st22')
 
-historyStock <- NULL
-date_1 <- '20190428'
+
+# date_1 <- '20190428'
 stockno <- '2330'
+startyear <- 2018
 ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
-
-# if( month(Sys.time()) >= 10){
-#   today <- paste0( year(Sys.time()), month(Sys.time()), day(Sys.time()) )
-# } else{
-#   today <- paste0( year(Sys.time()), 0, month(Sys.time()), day(Sys.time()) )
-# }
-
-source("func.R"); date_set_all <- date_set_all(NULL)
-
-for(date_1 in date_set_all[1:10] ){
+source("func.R"); date_set_all <- date_set_all(startyear)
+historyStock <- NULL
+Len <- 1/length(date_set_all)
+for(date_1 in date_set_all ){
   Sys.sleep(runif(1,2,3))#randomly delay 1 time between 2 and 3 seconds 
   url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
                  'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
@@ -59,8 +54,11 @@ for(date_1 in date_set_all[1:10] ){
                            stringsAsFactors = FALSE)
     historyStock <- rbind(historyStock, tmpStock) 
   }
+  if( round(Len*100) < round((Len + 1/dim(new_data)[1])*100) ){
+    cat(">>>",round(Len*100),"%",sep = "") 
+  }  
+  Len <- Len + 1/length(date_set_all)
 }
-
 colnames(historyStock) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value")         
 historyStock$Date <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
 historyStock$Open <- as.numeric(gsub(',', replacement = '', historyStock$Open))         
@@ -71,17 +69,21 @@ historyStock$Volume <- as.numeric(gsub(',', replacement = '', historyStock$Volum
 historyStock$Value <- as.numeric(gsub(',', replacement = '', historyStock$Value))      
 historyStock <- na.omit(historyStock)
 # data frame to xts         
-historyStock_1 <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
+stock_data <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
+rm(tmpStock, jsondata, date_1, Len, startyear, stockno, ttime, url_1, historyStock)
 chartSeries(historyStock_1)
 
 
 
 ############### write files ############################
-write.zoo(historyStock_1, file="2330.csv", sep=",")
+# write.zoo(stock_data, file="2330.csv", sep=",")
 
 
 ############### read files ############################
 source("func.R"); rcsv <- read_csv_to_xts("2330.csv")
-chartSeries(rcsv)
+# chartSeries(rcsv)
 
+############### update files ############################
+source("func.R"); update_rcsv <- xts_update(rcsv, stock_data)
+write.zoo(update_rcsv, file="2330.csv", sep=",")
 

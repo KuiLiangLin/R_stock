@@ -69,6 +69,10 @@ xts_update <- function(mother_file, new_data) {
     }
     Len <- Len + 1/dim(new_data)[1]
   }
-  cat("\nUpdated",count,"times")
+  cat("\nUpdated",count,"times\n")
   return(mother_file_new)
 }
+
+
+
+

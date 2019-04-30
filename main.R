@@ -59,6 +59,7 @@ for(date_1 in date_set_all ){
   }  
   Len <- Len + 1/length(date_set_all)
 }
+cat("\nGet",length(date_set_all),"months\n")
 colnames(historyStock) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value")         
 historyStock$Date <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
 historyStock$Open <- as.numeric(gsub(',', replacement = '', historyStock$Open))         

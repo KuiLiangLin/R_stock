@@ -74,5 +74,17 @@ xts_update <- function(mother_file, new_data) {
 }
 
 
-
-
+###############get_stock_num_list <- function(x) {############################
+get_stock_num_list <- function(date_1) {
+#  date_1 <- 20190418
+  ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
+  Sys.sleep(runif(1,2,3))#randomly delay 1 time between 2 and 3 seconds 
+  url_1 <- paste0('http://www.twse.com.tw/exchangeReport/BWIBBU_d?',
+                  'response=json&date=',date_1,'&selectType=ALL&_=',ttime)
+  jsondata <- fromJSON(url_1)
+  if(jsondata$stat == "OK"){
+    stockno <- jsondata$data[, 1]
+  }
+  cat("Get",length(stockno),"stock numbber\n")
+  return(stockno)
+}

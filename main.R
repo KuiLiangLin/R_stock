@@ -61,7 +61,7 @@ for(date_1 in date_set_all ){
 }
 cat("\nGet",length(date_set_all),"months\n")
 colnames(historyStock) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value")         
-historyStock$Date <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
+source("func.R"); historyStock$Date <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
 historyStock$Open <- as.numeric(gsub(',', replacement = '', historyStock$Open))         
 historyStock$High <- as.numeric(gsub(',', replacement = '', historyStock$High))         
 historyStock$Low <- as.numeric(gsub(',', replacement = '', historyStock$Low))         
@@ -89,3 +89,5 @@ source("func.R"); update_rcsv <- xts_update(rcsv, stock_data)
 write.zoo(update_rcsv, file = file_path, sep=",")
 # chartSeries(update_rcsv)
 
+
+source("func.R"); stock_n_list <- get_stock_num_list("20190417")#openn day

@@ -20,8 +20,9 @@ year_change_108_to_2019 <- function(x) {#2/29 is not allowed to transform
 # } else{
 #   today <- paste0( year(Sys.time()), 0, month(Sys.time()), day(Sys.time()) )
 # }
-date_set_all <- function(startyear){
+get_date_set_all <- function(startyear){
   dateset <- NULL
+  co <- 0
   for(i in c(startyear : year(Sys.time())) ){
     for(k in c(1:12)){
       if(k >= 10){
@@ -31,9 +32,11 @@ date_set_all <- function(startyear){
       }
       if(Sys.time() >= ymd(d)){
         dateset <- c(dateset, d)
+         co <- co + 1
       }
     }
   }
+  cat("Get", co, "Months\n")
   return(dateset)
 }
 
@@ -65,7 +68,7 @@ xts_update <- function(mother_file, new_data) {
       count <- count + 1
     }
     if( round(Len*100) < round((Len + 1/dim(new_data)[1])*100) ){
-      cat(">>>",round(Len*100),"%",sep = "") 
+      cat(">>>",round(Len*100),"%",sep = "")
     }
     Len <- Len + 1/dim(new_data)[1]
   }
@@ -75,16 +78,41 @@ xts_update <- function(mother_file, new_data) {
 
 
 ###############get_stock_num_list <- function(x) {############################
-get_stock_num_list <- function(date_1) {
-#  date_1 <- 20190418
+get_stock_num_list <- function(recent_open_day) {
+#  recent_open_day <- 20190418
   ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
   Sys.sleep(runif(1,2,3))#randomly delay 1 time between 2 and 3 seconds 
   url_1 <- paste0('http://www.twse.com.tw/exchangeReport/BWIBBU_d?',
-                  'response=json&date=',date_1,'&selectType=ALL&_=',ttime)
+                  'response=json&date=',recent_open_day,'&selectType=ALL&_=',ttime)
   jsondata <- fromJSON(url_1)
   if(jsondata$stat == "OK"){
     stockno <- jsondata$data[, 1]
+  } else {
+    cat("Fail to get stock number\n")
   }
-  cat("Get",length(stockno),"stock numbber\n")
+  cat("Get",length(stockno),"stock number\n")
   return(stockno)
+}
+
+
+###############show_percet_len <- function(x) {############################
+show_percet_len <- function(Len, x, data) {
+  if(is.null(Len)){Len <- 1/length(data)}
+  if( round(Len*100) < round((Len + 1/length(data)[1])*100) ){
+    cat(">>>",round(Len*100),"%",sep = "") 
+  }
+  Len <- Len + 1/length(data)[1]
+  if(x == last(data)){cat("\nGet",length(data),"data\n")}
+  return(Len)
+}
+
+###############show_percet_dim <- function(x) {############################
+show_percet_dim <- function(Len, x, data) {
+  if(is.null(Len)){Len <- 1/dim(data)}
+  if( round(Len*100) < round((Len + 1/dim(data)[1])*100) ){
+    cat(">>>",round(Len*100),"%",sep = "") 
+  }
+  Len <- Len + 1/dim(data)[1]
+  if(x == last(data)){cat("\nGet",dim(data),"data\n")}
+  return(Len)
 }

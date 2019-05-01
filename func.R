@@ -46,14 +46,15 @@ get_date_set_all <- function(startyear){
 read_csv_to_xts <- function(x) {
   rcsv <- read.csv(x)
   colnames(rcsv) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value") 
-  rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1])) 
+  rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1]))
   return(rcsv)
 }
 
 
 ###############xts_update <- function(x) {############################
-xts_update <- function(mother_file, new_data) {
-  mother_file_new <- mother_file
+xts_update <- function(mother_file, new_data, new_data_df) {
+  # mother_file_new <- mother_file
+  mother_file_new <- NULL
   count <- 0
   Len <- 1/dim(new_data)[1]
   for(i in c( 1:dim(new_data)[1] ) ){
@@ -64,7 +65,7 @@ xts_update <- function(mother_file, new_data) {
       }
     }
     if(do == 1){
-      mother_file_new <- rbind(mother_file_new, new_data[i,])
+      mother_file_new <- rbind(mother_file_new, new_data_df[i,])
       count <- count + 1
     }
     if( round(Len*100) < round((Len + 1/dim(new_data)[1])*100) ){

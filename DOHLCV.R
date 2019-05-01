@@ -38,6 +38,9 @@ source("func.R")
 
 ###############update_DOHLCV <- function(x) {############################
 update_DOHLCV <- function(date_set, stock_n_list, file_path) {
+  # file_path <- paste0(getwd(), "/data_DOHLCV/")
+  # stockno <- c("2330")
+  # date_1 <- c("20000101")
   sh_pee <- NULL
   for(stockno in stock_n_list){
     cat("  Doing stockno", stockno, "\n")
@@ -74,16 +77,23 @@ update_DOHLCV <- function(date_set, stock_n_list, file_path) {
     file_name <- paste0(file_path, stockno,".csv")
     if(file.exists(file_name)){
       ############### read files ############################
-      source("func.R"); rcsv <- read_csv_to_xts(file_name)
-      
+      source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
+
       ############### update files ############################
-      source("func.R"); update_rcsv <- xts_update(rcsv, stock_data)
+      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data, historyStock)
       
       ############### write files ############################
-      write.zoo(update_rcsv, file = file_name, sep=",")
+      # write.zoo(update_rcsv, file = file_name, sep=",")
+      sink(file = file_name, append = TRUE)
+      write.table(update_rcsv, file = file_name, sep=",", row.names = FALSE, col.names = FALSE,append = TRUE)
+      sink()
+      
     } else{
       ############### write files ############################
-      write.zoo(stock_data, file = file_name, sep=",")
+      # write.zoo(stock_data, file = file_name, sep=",")
+      sink(file = file_name, append = FALSE)
+      write.table(historyStock, file = file_name, sep=",", row.names = FALSE, append = FALSE)
+      sink()
     }
     
     source("func.R"); sh_pee <- show_percet_len(sh_pee, stockno, stock_n_list)

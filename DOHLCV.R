@@ -28,10 +28,11 @@ source("func.R")
 
 
 ##################################### TWSE ###########################################
-# qdate <- '20170721'   
-# qtype <- 'ALLBUT0999' 
-# url <- paste0('http://www.twse.com.tw/exchangeReport/MI_INDEX?',
-#               'response=json&date=',qdate,'&type=',qtype,'&_=',ttime)
+ # qdate <- '20170721'   
+ # qtype <- 'ALLBUT0999' 
+ # url <- paste0('http://www.twse.com.tw/exchangeReport/MI_INDEX?',
+ #               'response=json&date=',qdate,'&type=',qtype,'&_=',ttime)
+ # http://www.twse.com.tw/exchangeReport/MI_INDEX?response=json&date=20170721&type=ALLBUT0999&_=155731895500
 # url_2 <- paste0('http://mops.twse.com.tw/mops/web/t05st22')
 
 

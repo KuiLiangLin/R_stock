@@ -21,7 +21,7 @@ source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
 
 
 
-
+library(compiler)
 library(rvest)
 stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_2_0.html", encoding = 'ISO-8859-1')
 file_name_mon <- "10802"

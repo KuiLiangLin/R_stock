@@ -29,8 +29,7 @@ source("MON_REV.R"); month_report_revenue(stats,file_name_mon)
 rcsv <- read.csv(file_name_mon)
 colnames(rcsv) <- c("num", "revenue") 
 
-
-
+system.time( month_report_revenue(stats,file_name_mon))
 
 
 

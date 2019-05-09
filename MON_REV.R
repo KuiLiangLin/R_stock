@@ -6,14 +6,14 @@ library(compiler)
 
 month_report_revenue <- function(stats, file_name_mon) {
   cmpfun(asdd)
-  tmp <- NULL;  df_tmp_j <- NULL;  df_tmp_i <- NULL;  sh_pe <- NULL
-  for(k in c(1:3)){
+  tmp <- 1:11;  df_tmp_j <- NULL;  df_tmp_i <- NULL;  sh_pe <- NULL
+  for(k in c(1:29)){
     j <- 3
     repeat{  # for(j in c(3,4,5,6,7,8,9)){
       for(i in c(1,3,11)){    # for(i in c(1,3,4,5,6,7,8,9,10,11)){
         asd <- html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',k,']//tr[2]//td//table//tr[',j,']//td[',i,']'))
         # asd <- asdd(k, j, i)
-        if(length(html_text(asd)) == 0){
+        if(length(asdd(asd)) == 0){
           tmp[11] <- 0
           break
         } else{
@@ -21,18 +21,17 @@ month_report_revenue <- function(stats, file_name_mon) {
           tmp[i] <- asdd(asd)
         }
       }
-      if(tmp[11] == "-"){
+      if(tmp[11] == 0){
+        break
+      } else{
         for(i in c(1,3)){tmp[i] <- as.numeric(gsub(',', replacement = '', tmp[i]))}
-        
         df_tmp_i <- rbind.data.frame(c(tmp[1], tmp[3]))
         colnames(df_tmp_i) <- c("num", "revenue") 
         df_tmp_j <- rbind(df_tmp_j, df_tmp_i) 
-      } else{
-        break
       }
       cat(j,",",sep = ""); j <- j + 1
     }
-    source("func.R"); sh_pe <- show_percet_len(sh_pe, k, c(1:3))
+    source("func.R"); sh_pe <- show_percet_len(sh_pe, k, c(1:29))
   }
   
   file_path_mon <- paste0(getwd(), "/data_MON/")

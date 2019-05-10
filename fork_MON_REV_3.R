@@ -13,7 +13,7 @@ source("fork_MON_REV_main.R")
 
 # cmpfun(asdd)
 tmp <- 1:11;  df_tmp_j <- NULL;  df_tmp_i <- NULL;
-for(k in c(20:29)){
+for(k in c(19:29)){
   cat(" %%k=",k,"%% ",sep = "");
   j <- 3
   repeat{  # for(j in c(3,4,5,6,7,8,9)){

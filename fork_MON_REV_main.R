@@ -10,8 +10,6 @@ stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_107_12_0.html", 
 # do fork job
 # do fork job
 # do fork job
-
-
 out_1 <- NULL
 out_2 <- NULL
 out_3 <- NULL
@@ -23,13 +21,29 @@ if(dir.exists(file_path_mon) == FALSE){dir.create(file_path_mon)}
 write.table(df_tmp, file = file_name_mon_wr, sep=",",row.names = FALSE, append = FALSE)
 
 
-# 
-# aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[1]//tr[2]//td//table')))
-# aaa <- gsub(',', replacement = '', aaa)
-# substring(aaa, 139, 142)
-# bbb <- strsplit(aaa, " ")
-# for(i in c(1:1000)){
-#   is.numeric(bbb[[1]][988])
-# }
-# 
 
+
+
+ aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[1]//tr[2]//td//table')))
+ aaa <- gsub(',', replacement = '', aaa)
+ # d <- substring(aaa, 138, 141)
+ bbb <- strsplit(aaa, " ")
+d <- NULL
+for(i in c(1:length(bbb[[1]]))){
+  c <- grep("[0-9]", bbb[[1]][i], value = TRUE)
+  if(length(c)==1){d <- cbind(d, c)}
+}
+d[1] <- substring(d[1], 139, 142)
+# d[9] <- gsub(',', replacement = '', aaa)
+for(j in c(0:(length(d)-9)/8)){
+  d[9+8*j] <- last(strsplit(d[9+8*j], "-")[[1]])
+  d[9+8*j] <- substring(d[9+8*j], 1, 4)
+}
+f <- c(d[1], d[2])
+for(k in c(1:ceiling((length(d)-9)/8))){
+  f <- rbind(f, c(d[1+8*k], d[2+8*k]) )
+}
+
+c(d[1], d[2])
+d[9]
+d[17]

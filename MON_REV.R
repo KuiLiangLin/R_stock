@@ -14,34 +14,46 @@ month_report_revenue <- function(stats, file_name_mon) {
     # d <- substring(aaa, 138, 141)
     bbb <- strsplit(aaa, "    ")
     d <- NULL
+    #-----------------------------get all number--------------------------------
     for(i in c(1:length(bbb[[1]]))){
       c <- grep("[0-9]", bbb[[1]][i], value = TRUE)
       if(length(c)==1){d <- cbind(d, c)}
     }
     d[1] <- substring(d[1], 139, 142)
-    for(j in c(0:ceiling((length(d)-25)/8))){
-      # d[9+8*j] <- last(strsplit(d[9+8*j], "-")[[1]])
-      # d[9+8*j] <- substring(d[9+8*j], 1, 4)
-      r1 <- strsplit(d[9+8*j], "")
-      cc <- cbind(NA, NA, NA, NA)
-      for(x in c( ceiling(length(r1[[1]])) :1 )){
-        c <- grep("[0-9]", r1[[1]][x], value = TRUE)
-        if(length(c)==1){
-          cc[4] <- cc[3]
-          cc[3] <- cc[2]
-          cc[2] <- cc[1]
-          cc[1] <- c
-          if(is.na(cc[4])==FALSE){break}
-        }
-      }
-      d[9+8*j] <- paste0(cc[1], cc[2], cc[3], cc[4])
-    }
+    #-----------------------------get stock number--------------------------------
+    zero_shift <- 0
     f <- c(d[1], d[2])
-    for(k in c(1:ceiling((length(d)-17)/8))){
-      f <- rbind(f, c(d[1+8*k], d[2+8*k]) )
+    for(j in c(0:ceiling((length(d)-25)/8))){
+      r1 <- strsplit(d[9+8*j-zero_shift], "")
+      cc <- cbind(NA, NA, NA, NA)
+      if(gsub(' ', replacement = '', d[9+8*j+3-zero_shift]) == "0"){
+        if(substring(gsub(' ', replacement = '', d[9+8*j+6-zero_shift]),1,1) == "0"){
+          zero_shift <- zero_shift + 2
+        }else{
+          zero_shift <- zero_shift + 1
+        }
+        cat("Discard revenue of a stock number")
+      }else{
+        for(x in c( ceiling(length(r1[[1]])) :1 )){
+          c <- grep("[0-9]", r1[[1]][x], value = TRUE)
+          if(length(c)==1){
+            cc[4] <- cc[3]
+            cc[3] <- cc[2]
+            cc[2] <- cc[1]
+            cc[1] <- c
+            if(is.na(cc[4])==FALSE){break}
+          }
+        }
+        d[9+8*j-zero_shift] <- paste0(cc[1], cc[2], cc[3], cc[4])
+        f <- rbind(f, c(d[9+8*j-zero_shift], d[9+8*j-zero_shift+1]) )
+      }
     }
+    # f <- c(d[1], d[2])
+    # for(k in c(1:ceiling((length(d)-17)/8))){
+    #   f <- rbind(f, c(d[1+8*k], d[2+8*k]) )
+    # }
     f1 <- rbind(f1, f)
-    source("func.R"); sh_pe <- show_percet_len(sh_pe, k, c(1:28))
+    source("func.R"); sh_pe <- show_percet_len(sh_pe, m, c(1:28))
   }
   
   # 

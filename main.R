@@ -7,7 +7,7 @@ source("DOHLCV.R")
 
 
  source("func.R"); stock_list <- get_stock_num_list("20190429")
- source("func.R"); date_set <- get_date_set_all(2000)
+ source("func.R"); date_set <- get_date_set_all(2013)
 
  file_path <- paste0(getwd(), "/data_DOHLCV/")
  file_name <- paste0(file_path, stock_list[4],".csv")
@@ -18,7 +18,7 @@ source("DOHLCV.R")
 
 
  library(rvest)
- stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_3_0.html", encoding = 'ISO-8859-1')
+ stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_1_0.html", encoding = 'ISO-8859-1')
  file_name_mon <- "10803"
  source("MON_REV.R"); month_report_revenue(stats,file_name_mon)
 # rcsv <- read.csv(file_name_mon)
@@ -26,7 +26,7 @@ source("DOHLCV.R")
 
  
  library(rvest)
- for(y in c(108:108)){
+ for(y in c(102:102)){
   for(mo in c(1:12)){
     Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
     url <- paste0("http://mops.twse.com.tw/nas/t21/sii/t21sc03_",y,"_",mo,"_0.html")
@@ -46,7 +46,7 @@ source("DOHLCV.R")
 #season report
 #http://mops.twse.com.tw/mops/web/ajax_t163sb04?encodeURIComponent=1&step=1&firstin=1&off=1&TYPEK=sii&year=103&season=01
 
-
+ # http://mops.twse.com.tw/mops/web/ajax_t51sb08?encodeURIComponent=1&step=1&firstin=1&off=1&TYPEK=sii&year=101&season=01
 
 
 # cl <- makeCluster(3)

@@ -17,10 +17,6 @@ source("DOHLCV.R")
 #chartSeries(rcsv_xts)
 
 
-
-
-# 
- # library(compiler)
  library(rvest)
  stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_3_0.html", encoding = 'ISO-8859-1')
  file_name_mon <- "10803"
@@ -28,8 +24,18 @@ source("DOHLCV.R")
 # rcsv <- read.csv(file_name_mon)
 # colnames(rcsv) <- c("num", "revenue") 
 
-
-
+ 
+ library(rvest)
+ for(y in c(108:108)){
+  for(mo in c(1:12)){
+    Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
+    url <- paste0("http://mops.twse.com.tw/nas/t21/sii/t21sc03_",y,"_",mo,"_0.html")
+    stats <- read_html(url, encoding = 'ISO-8859-1')
+    if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
+    source("MON_REV.R"); month_report_revenue(stats,file_name_mon)
+    cat(y,mo)
+  }         
+ }
 
 
 

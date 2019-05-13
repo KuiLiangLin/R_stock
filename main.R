@@ -5,7 +5,7 @@ library(jsonlite)
 source("func.R")
 source("DOHLCV.R")
 
-
+#------------------------------------data_DOHLCV----------------------------------------------
  source("func.R"); stock_list <- get_stock_num_list("20190429")
  source("func.R"); date_set <- get_date_set_all(2013)
 
@@ -16,50 +16,33 @@ source("DOHLCV.R")
  source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
 #chartSeries(rcsv_xts)
 
-
- library(rvest)
- stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_1_0.html", encoding = 'ISO-8859-1')
- file_name_mon <- "10803"
- source("MON_REV.R"); month_report_revenue(stats,file_name_mon)
-# rcsv <- read.csv(file_name_mon)
-# colnames(rcsv) <- c("num", "revenue") 
-
  
+ 
+#------------------------------------month_report_revenue----------------------------------------------
  library(rvest)
- for(y in c(102:102)){
-  for(mo in c(1:12)){
-    Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
-    url <- paste0("http://mops.twse.com.tw/nas/t21/sii/t21sc03_",y,"_",mo,"_0.html")
-    stats <- read_html(url, encoding = 'ISO-8859-1')
-    if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
-    source("MON_REV.R"); month_report_revenue(stats,file_name_mon)
+ for(y in c(103:103)){
+  for(mo in c(1:1)){
     cat(y,mo)
+    Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
+    if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
+    source("MON_REV.R"); month_report_revenue(file_name_mon, y, mo)
   }         
  }
+ # rcsv <- read.csv(file_name_mon)
+ # colnames(rcsv) <- c("num", "revenue") 
+ 
 
 
+#------------------------------------season report----------------------------------------------
+ 
+library(rvest)
+for(y in c(103:103)){
+  for(z in c(1:4)){
+    cat(paste0(y,"0",z))
+    Sys.sleep(runif(1,3,4))#randomly delay 1 time between 2 and 3 seconds 
+    file_name_season <- paste0(y,"0",z)
+    source("SEASON_EPS.R");season_report_eps(file_name_season, y, z) 
+  }
+}
+ # rcsv <- read.csv(file_name_mon)
 
-
-
-
-
-#season report
-#http://mops.twse.com.tw/mops/web/ajax_t163sb04?encodeURIComponent=1&step=1&firstin=1&off=1&TYPEK=sii&year=103&season=01
-
- # http://mops.twse.com.tw/mops/web/ajax_t51sb08?encodeURIComponent=1&step=1&firstin=1&off=1&TYPEK=sii&year=101&season=01
-
-
-# cl <- makeCluster(3)
-# 
-# clusterExport(cl, "stats")
-# clusterExport(cl, "k")
-# clusterExport(cl, "j")
-# a <- NULL
-# k <- 1; j <-10
-# 
-# a <- lapply(c(1, 3, 11), function(x) rvest::html_text(rvest::html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',k,']//tr[2]//td//table//tr[',j,']//td[',x,']'))))
-# 
-# a[3]
-# system.time(lapply(c(1, 3), function(x) rvest::html_text(rvest::html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',k,']//tr[2]//td//table//tr[',j,']//td[',x,']'))))   )
-# 
-# parLapply(cl, c(1, 3, 11),  month_report_revenue(stats,file_name_mon, x) )

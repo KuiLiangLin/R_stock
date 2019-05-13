@@ -4,11 +4,16 @@ library(rvest)
 #stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_2_0.html", encoding = 'ISO-8859-1')
 # file_name_mon <- "10802"
 
-month_report_revenue <- function(stats, file_name_mon) {
+month_report_revenue <- function(file_name_mon, y, mo) {
+  url <- paste0("http://mops.twse.com.tw/nas/t21/sii/t21sc03_",y,"_",mo,"_0.html")
+  # stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_1_0.html", encoding = 'ISO-8859-1')
+  # file_name_mon <- "10803"
+  stats <- read_html(url, encoding = 'ISO-8859-1')
   sh_pe <- NULL
   f1 <- NULL
   for(m in c(1:28)){
-    # m <- 4
+     # m <- 4
+     # aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[2]//td//table//tr')))
     aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[2]//td//table')))
     aaa <- gsub(',', replacement = '', aaa)
     # d <- substring(aaa, 138, 141)

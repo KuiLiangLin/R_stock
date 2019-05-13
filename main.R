@@ -7,7 +7,7 @@ source("DOHLCV.R")
 
 #------------------------------------data_DOHLCV----------------------------------------------
  source("func.R"); stock_list <- get_stock_num_list("20190429")
- source("func.R"); date_set <- get_date_set_all(2013)
+ source("func.R"); date_set <- get_date_set_all(2014)
 
  file_path <- paste0(getwd(), "/data_DOHLCV/")
  file_name <- paste0(file_path, stock_list[4],".csv")

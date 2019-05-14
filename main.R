@@ -21,7 +21,7 @@ source("DOHLCV.R")
 #------------------------------------month_report_revenue----------------------------------------------
  library(rvest)
  for(y in c(108:108)){#99~108
-  for(mo in c(5:5)){#1~12
+  for(mo in c(4:4)){#1~12
     cat(y,mo)
     Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
     if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
@@ -52,8 +52,8 @@ source("DOHLCV.R")
 #------------------------------------season report----------------------------------------------
  
 library(rvest)
-for(y in c(99:107)){#99~108
-  for(z in c(1:4)){#1~4
+for(y in c(108:108)){#99~108
+  for(z in c(1:1)){#1~4
     cat(paste0(";",y,"0",z))
     Sys.sleep(runif(1,3,4))#randomly delay 1 time between 2 and 3 seconds 
     file_name_season <- paste0(y,"0",z)

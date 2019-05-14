@@ -20,29 +20,45 @@ source("DOHLCV.R")
  
 #------------------------------------month_report_revenue----------------------------------------------
  library(rvest)
- for(y in c(99:107)){
-  for(mo in c(1:12)){
+ for(y in c(108:108)){#99~108
+  for(mo in c(5:5)){#1~12
     cat(y,mo)
     Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
     if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
     source("MON_REV.R"); month_report_revenue(file_name_mon, y, mo)
   }         
  }
- # rcsv <- read.csv(file_name_mon)
- # colnames(rcsv) <- c("num", "revenue") 
+ 
+ #------------------------------------month_report_revenue only for 10201----------------------------------------------
+ # tmp2 <- NULL
+ # file_name_mon <- "10201"
+ # file_path_mon <- paste0(getwd(), "/data_MON/")
+ # file_name_mon_wr <- paste0(file_path_mon, file_name_mon,".csv")
+ # rcsv <- read.csv(file_name_mon_wr)
+ # for(x in c(1:808)){
+ #   ppp<- strsplit(   as.character(rcsv[x,2]), "<")
+ #   tmp <- cbind(as.character(rcsv[x,1]), ppp[[1]][1])
+ #   tmp2 <- rbind(tmp2, tmp)
+ #  }
+ # write.table(tmp2, file = file_name_mon_wr, sep=",",row.names = FALSE, append = FALSE)
+ # cat("All Done\n")
+ # 
+ # 
  
 
-
+ 
+ 
+ 
 #------------------------------------season report----------------------------------------------
  
 library(rvest)
-for(y in c(99:107)){
-  for(z in c(1:4)){
+for(y in c(99:107)){#99~108
+  for(z in c(1:4)){#1~4
     cat(paste0(";",y,"0",z))
     Sys.sleep(runif(1,3,4))#randomly delay 1 time between 2 and 3 seconds 
     file_name_season <- paste0(y,"0",z)
     source("SEASON_EPS.R");season_report_eps(file_name_season, y, z) 
   }
 }
- # rcsv <- read.csv(file_name_mon)
+ rcsv <- read.csv(file_name_mon)
 

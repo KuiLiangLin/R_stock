@@ -122,7 +122,7 @@ month_report_revenue <- function(file_name_mon, y, mo) {
       # m <- 1
     if(y=="100" | y=="99"){
       aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table[',m+1,']//tr[2]//td//table//tr')))
-    }else if(y=="102"){
+    }else if(y=="102" & mo == "1"){
       aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[3]//td//table//tr')))
     }else{
       aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[2]//td//table//tr')))

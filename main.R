@@ -7,7 +7,7 @@ source("DOHLCV.R")
 
 #------------------------------------data_DOHLCV----------------------------------------------
  source("func.R"); stock_list <- get_stock_num_list("20190429")
- source("func.R"); date_set <- get_date_set_all(2014)
+ source("func.R"); date_set <- get_date_set_all(2010)
 
  file_path <- paste0(getwd(), "/data_DOHLCV/")
  file_name <- paste0(file_path, stock_list[4],".csv")
@@ -20,8 +20,8 @@ source("DOHLCV.R")
  
 #------------------------------------month_report_revenue----------------------------------------------
  library(rvest)
- for(y in c(103:103)){
-  for(mo in c(1:1)){
+ for(y in c(99:107)){
+  for(mo in c(1:12)){
     cat(y,mo)
     Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
     if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
@@ -36,9 +36,9 @@ source("DOHLCV.R")
 #------------------------------------season report----------------------------------------------
  
 library(rvest)
-for(y in c(103:103)){
+for(y in c(99:107)){
   for(z in c(1:4)){
-    cat(paste0(y,"0",z))
+    cat(paste0(";",y,"0",z))
     Sys.sleep(runif(1,3,4))#randomly delay 1 time between 2 and 3 seconds 
     file_name_season <- paste0(y,"0",z)
     source("SEASON_EPS.R");season_report_eps(file_name_season, y, z) 

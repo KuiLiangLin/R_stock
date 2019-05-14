@@ -107,18 +107,26 @@ month_report_revenue_1 <- function(file_name_mon, y, mo) {
 
 
 month_report_revenue <- function(file_name_mon, y, mo) {
-  # y <- 105
+  # y <- 99
   # mo <- 10
   url <- paste0("http://mops.twse.com.tw/nas/t21/sii/t21sc03_",y,"_",mo,"_0.html")
+  # stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_99_1_0.html", encoding = 'ISO-8859-1')
   # stats <- read_html("http://mops.twse.com.tw/nas/t21/sii/t21sc03_108_1_0.html", encoding = 'ISO-8859-1')
   # file_name_mon <- "10803"
   stats <- read_html(url, encoding = 'ISO-8859-1')
 
   sh_pe <- NULL
   f1 <- NULL
-  for(m in c(1:28)){
-    # m <- 4
-    aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[2]//td//table//tr')))
+  if(y=="100" | y=="99"){cm <- c(1:30)}else{cm <- c(1:28)}
+  for(m in cm){
+      # m <- 1
+    if(y=="100" | y=="99"){
+      aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table[',m+1,']//tr[2]//td//table//tr')))
+    }else if(y=="102"){
+      aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[3]//td//table//tr')))
+    }else{
+      aaa <- html_text(html_nodes(stats, xpath = paste0('//body//center//center//table//tr//td//table[',m,']//tr[2]//td//table//tr')))
+    }
     for(x in c(3:(length(aaa)-1) )){
       cc <- substring(aaa[x], 1, 4)
       aaaa <- strsplit(aaa[x], "    ")
@@ -127,12 +135,12 @@ month_report_revenue <- function(file_name_mon, y, mo) {
         if(length(ccc)==1){
           ccc <- gsub(',', replacement = '', aaaa[[1]][i])
           ccc <- gsub(' ', replacement = '', ccc)
-          f1 <- rbind(f, c(cc, ccc) )
+          f1 <- rbind(f1, c(cc, ccc) )
           break
         }
       }
     }
-    source("func.R"); sh_pe <- show_percet_len(sh_pe, m, c(1:28))
+    source("func.R"); sh_pe <- show_percet_len(sh_pe, m, cm)
   }
   file_path_mon <- paste0(getwd(), "/data_MON/")
   file_name_mon_wr <- paste0(file_path_mon, file_name_mon,".csv")

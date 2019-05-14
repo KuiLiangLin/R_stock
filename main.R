@@ -2,10 +2,9 @@
 library(quantmod)
 library(lubridate)
 library(jsonlite)
-source("func.R")
-source("DOHLCV.R")
+library(rvest)
 
-#------------------------------------data_DOHLCV----------------------------------------------
+#------------------------------------daily data DOHLCV ----------------------------------------------
  source("func.R"); stock_list <- get_stock_num_list("20190429")
  source("func.R"); date_set <- get_date_set_all(2010)
 
@@ -18,8 +17,7 @@ source("DOHLCV.R")
 
  
  
-#------------------------------------month_report_revenue----------------------------------------------
- library(rvest)
+#------------------------------------month report revenue ----------------------------------------------
  for(y in c(108:108)){#99~108
   for(mo in c(4:4)){#1~12
     cat(y,mo)
@@ -29,7 +27,7 @@ source("DOHLCV.R")
   }         
  }
  
- #------------------------------------month_report_revenue only for 10201----------------------------------------------
+#------------------------------------month report revenue only for 10201 ----------------------------------------------
  # tmp2 <- NULL
  # file_name_mon <- "10201"
  # file_path_mon <- paste0(getwd(), "/data_MON/")
@@ -49,9 +47,7 @@ source("DOHLCV.R")
  
  
  
-#------------------------------------season report----------------------------------------------
- 
-library(rvest)
+#------------------------------------season report ----------------------------------------------
 for(y in c(108:108)){#99~108
   for(z in c(1:1)){#1~4
     cat(paste0(";",y,"0",z))
@@ -60,5 +56,22 @@ for(y in c(108:108)){#99~108
     source("SEASON_EPS.R");season_report_eps(file_name_season, y, z) 
   }
 }
- rcsv <- read.csv(file_name_mon)
+rcsv <- read.csv(file_name_mon)
+
+
+
+
+
+#------------------------------------eps estimate-----------------------
+rcsv <- NULL
+for(y in c(99:108)){#99~108
+  for(z in c(1:4)){#1~4
+    file_name_wr <- paste0(paste0(getwd(), "/data_SEASON/"), paste0(y,"0",z),".csv")
+    rcsv_tmp <- read.csv(file_name_wr)
+    rcsv <- rbind(rcsv, rcsv_tmp[1:length(rcsv_tmp$V1),1:20])
+    # tmp_sea <- as.character(rcsv$V1[1]);tmp_sea
+    cat(y,z,";")
+  }
+}
+
 

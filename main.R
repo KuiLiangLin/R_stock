@@ -9,9 +9,9 @@ library(rvest)
  source("func.R"); date_set <- get_date_set_all(2010)
 
  file_path <- paste0(getwd(), "/data_DOHLCV/")
- file_name <- paste0(file_path, stock_list[4],".csv")
+ # file_name <- paste0(file_path, stock_list[4],".csv")
  if(dir.exists(file_path) == FALSE){ dir.create(file_path)}
- source("DOHLCV.R"); update_DOHLCV(date_set[8:10], stock_list[3:4], file_path)
+ source("DOHLCV.R"); update_DOHLCV(date_set[1:4], stock_list[1:4], file_path)
  source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
 #chartSeries(rcsv_xts)
 
@@ -88,6 +88,7 @@ for(y in c(100:108)){#99~108
   }
 };
 rcsv_mon <- rcsv; 
+colSums(rcsv_mon)
 a <- t(rcsv_mon)
 a[,1] <- as.numeric(row.names(a))
 source("func.R"); a[-1,1] <- year_change_108_to_2019(as.numeric(a[-1,1]) )

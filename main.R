@@ -62,7 +62,7 @@ rcsv <- read.csv(file_name_mon)
 
 
 
-#------------------------------------eps estimate-----------------------
+#------------------------------------eps estimate season-----------------------
 rcsv <- NULL
 for(y in c(99:108)){#99~108
   for(z in c(1:4)){#1~4
@@ -73,5 +73,26 @@ for(y in c(99:108)){#99~108
     cat(y,z,";")
   }
 }
+
+#------------------------------------eps estimate month-----------------------
+rcsv <- NULL
+for(y in c(100:108)){#99~108
+  for(mo in c(1:12)){#1~4
+    if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
+    file_name_wr <- paste0(paste0(getwd(), "/data_MON/"), file_name_mon,".csv")
+    rcsv_tmp <- read.csv(file_name_wr)
+    rcsv_tmp <- rcsv_tmp[!duplicated(rcsv_tmp),]
+    colnames(rcsv_tmp) <- c("no", paste0(file_name_mon, "01"))
+    if(is.null(rcsv)){rcsv <- rcsv_tmp}else{rcsv <- merge(rcsv_tmp, rcsv, by="no", all = TRUE)}
+    cat(y,mo,";")
+  }
+};
+rcsv_mon <- rcsv; 
+a <- t(rcsv_mon)
+a[,1] <- as.numeric(row.names(a))
+source("func.R"); a[-1,1] <- year_change_108_to_2019(as.numeric(a[-1,1]) )
+stock_data <- xts(as.numeric(a[-1,2]), order.by = as.Date(as.numeric(a[-1,1])))
+rm(rcsv_tmp, file_name_mon, file_name_wr, rcsv_tmp, mo, y, rcsv, da, ye)
+chartSeries(stock_data, name = a[1,2])
 
 

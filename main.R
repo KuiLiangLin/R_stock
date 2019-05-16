@@ -88,12 +88,23 @@ for(y in c(100:108)){#99~108
   }
 };
 rcsv_mon <- rcsv; 
-colSums(rcsv_mon)
+rcsv_mon[length(rcsv_mon[,1]),1] <- "Total"
+for(x in c(2:length(rcsv_mon[1,]))){
+  bbb<-rcsv_mon[,x]
+  rcsv_mon[length(rcsv_mon[,x]),x] <- sum(bbb[!is.na(bbb)])
+}
 a <- t(rcsv_mon)
 a[,1] <- as.numeric(row.names(a))
 source("func.R"); a[-1,1] <- year_change_108_to_2019(as.numeric(a[-1,1]) )
+at <- t(a)
 stock_data <- xts(as.numeric(a[-1,2]), order.by = as.Date(as.numeric(a[-1,1])))
+# stock_data <- xts(as.numeric(subset(at, select = no:1001)), order.by = as.Date(as.numeric(a[-1,1])))
+
 rm(rcsv_tmp, file_name_mon, file_name_wr, rcsv_tmp, mo, y, rcsv, da, ye)
 chartSeries(stock_data, name = a[1,2])
 
-
+# subset(df, V1=="1101")
+# complete.cases(df)
+# a[!is.na(a)]
+# colSums(rcsv_mon)
+subset()

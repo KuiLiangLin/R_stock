@@ -93,18 +93,23 @@ for(x in c(2:length(rcsv_mon[1,]))){
   bbb<-rcsv_mon[,x]
   rcsv_mon[length(rcsv_mon[,x]),x] <- sum(bbb[!is.na(bbb)])
 }
+a[is.na(a)] <- 0
 a <- t(rcsv_mon)
 a[,1] <- as.numeric(row.names(a))
 source("func.R"); a[-1,1] <- year_change_108_to_2019(as.numeric(a[-1,1]) )
-at <- t(a)
+# b <- a[-1,grepl("1101",a[1,])]
 stock_data <- xts(as.numeric(a[-1,2]), order.by = as.Date(as.numeric(a[-1,1])))
-# stock_data <- xts(as.numeric(subset(at, select = no:1001)), order.by = as.Date(as.numeric(a[-1,1])))
+stock_data <- xts(as.numeric(a[-1,grepl("Total",a[1,])]), order.by = as.Date(as.numeric(a[-1,1])))
 
 rm(rcsv_tmp, file_name_mon, file_name_wr, rcsv_tmp, mo, y, rcsv, da, ye)
-chartSeries(stock_data, name = a[1,2])
+chartSeries(stock_data, name = a[1,grepl("Total",a[1,])],theme="black")
+
+ma_3<-runMean(stock_data,n=3)
+addTA(ma_3,on=1,col="yellow")
 
 # subset(df, V1=="1101")
 # complete.cases(df)
 # a[!is.na(a)]
 # colSums(rcsv_mon)
-subset()
+# a[is.na(a)] <- 0
+# is.na(a)

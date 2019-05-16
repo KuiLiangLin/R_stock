@@ -103,3 +103,90 @@ update_DOHLCV <- function(date_set, stock_n_list, file_path) {
   rm(tmpStock, jsondata, date_1, ttime, url_1, historyStock)
   cat("All Done\n")
 }
+
+
+
+
+
+
+
+
+###############update_DOHLCV_simplify <- function(x) {############################
+update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
+  file_path <- paste0(getwd(), "/data_DOHLCV/")
+  stockno <- c("1101")
+  date_1 <- c("20000101")
+  sh_pee <- NULL
+  daily_data <- NULL
+  for(stockno in stock_n_list){
+    cat("  Doing stockno", stockno, "\n")
+    ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
+    historyStock <- NULL
+    sh_pe <- NULL
+    
+    for(date_1 in date_set){
+      Sys.sleep(runif(1,2,4))#randomly delay 1 time between 2 and 3 seconds 
+      url_1 <- paste0('http://www.tse.com.tw/exchangeReport/STOCK_DAY?',
+                      'response=json&date=',date_1,'&stockNo=',stockno,'&_=',ttime)
+      jsondata <- fromJSON(url_1)
+      if(jsondata$stat == "OK"){
+        tmpStock <- data.frame(jsondata$data[, 1],  
+                               jsondata$data[, 2:3],  
+                               NA,
+                               stringsAsFactors = FALSE)
+        historyStock <- rbind(historyStock, tmpStock) 
+      }
+      source("func.R"); sh_pe <- show_percet_len(sh_pe, date_1, date_set)
+    }
+    # colnames(historyStock) <- c("Date", "Volume", "Value", "Close")         
+    source("func.R"); historyStock[, 1] <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
+    historyStock[,2] <- as.numeric(gsub(',', replacement = '', historyStock[,2]))         
+    historyStock[,3] <- as.numeric(gsub(',', replacement = '', historyStock[,3]))      
+    historyStock[,4] <- round(historyStock[,3] / historyStock[,2], 2)         
+    
+    historyStock <- rbind(c("nono", "Volume", "Value", "Price"), historyStock)
+    colnames(historyStock) <- c("Date", paste0(stockno,"_vo"), paste0(stockno,"_va"), paste0(stockno,"_pr"))         
+    if(is.null(daily_data)){daily_data <- historyStock}else{daily_data <- merge(daily_data, historyStock,  by="Date", all = TRUE)}
+    
+    source("func.R"); sh_pee <- show_percet_len(sh_pee, stockno, stock_n_list)
+  }  
+    
+    
+    # historyStock <- na.omit(historyStock)
+    # stock_data <- xts(historyStock[, -1], order.by = as.Date(historyStock[, 1])) 
+
+    # plot(historyStock[, 1],historyStock$Value)
+    # lines(historyStock[, 1],historyStock$Value)
+    # plot(historyStock[, 1],historyStock$Close)
+    # lines(historyStock[, 1],historyStock$Close)
+    # 
+
+    
+    
+    file_name <- paste0(file_path, stockno,".csv")
+    if(file.exists(file_name)){
+      ############### read files ############################
+      source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
+      
+      ############### update files ############################
+      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data, historyStock)
+      
+      ############### write files ############################
+      # write.zoo(update_rcsv, file = file_name, sep=",")
+      sink(file = file_name, append = TRUE)
+      write.table(update_rcsv, file = file_name, sep=",", row.names = FALSE, col.names = FALSE,append = TRUE)
+      sink()
+      
+    } else{
+      ############### write files ############################
+      # write.zoo(stock_data, file = file_name, sep=",")
+      sink(file = file_name, append = FALSE)
+      write.table(historyStock, file = file_name, sep=",", row.names = FALSE, append = FALSE)
+      sink()
+    }
+    
+
+  rm(sh_pee, stockno, sh_pe, stock_data, file_name)
+  rm(tmpStock, jsondata, date_1, ttime, url_1, historyStock)
+  cat("All Done\n")
+}

@@ -11,9 +11,11 @@ library(rvest)
  file_path <- paste0(getwd(), "/data_DOHLCV/")
  # file_name <- paste0(file_path, stock_list[4],".csv")
  if(dir.exists(file_path) == FALSE){ dir.create(file_path)}
- source("DOHLCV.R"); update_DOHLCV(date_set[1:4], stock_list[1:4], file_path)
- source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
-#chartSeries(rcsv_xts)
+ # source("DOHLCV.R"); update_DOHLCV(date_set[1:4], stock_list[1:4], file_path)
+ source("DOHLCV.R"); update_DOHLCV_simplify(date_set[1:4], stock_list[1:4], file_path)
+ 
+ # source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
+
 
  
  
@@ -68,13 +70,14 @@ for(y in c(99:108)){#99~108
   for(z in c(1:4)){#1~4
     file_name_wr <- paste0(paste0(getwd(), "/data_SEASON/"), paste0(y,"0",z),".csv")
     rcsv_tmp <- read.csv(file_name_wr)
-    rcsv <- rbind(rcsv, rcsv_tmp[1:length(rcsv_tmp$V1),1:20])
+    # rcsv <- rbind(rcsv, rcsv_tmp[1:length(rcsv_tmp$V1),1:20])
     # tmp_sea <- as.character(rcsv$V1[1]);tmp_sea
     cat(y,z,";")
   }
 }
-# x <- array(NA, c(dim(rcsv_mon),7))
-# x[,,1] <- a
+
+x <- array(NA, c(dim(rcsv_mon),7))
+x[,,1] <- a
 
 
 #------------------------------------eps estimate month-----------------------
@@ -118,5 +121,5 @@ addTA(ma_3,on=1,col="yellow")
 # is.na(a)
 
  # x <- array(1:30, c(5,2,3))
-x <- array(NA, c(dim(rcsv_mon),7))
-x[,,1] <- a
+
+

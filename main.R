@@ -73,6 +73,9 @@ for(y in c(99:108)){#99~108
     cat(y,z,";")
   }
 }
+# x <- array(NA, c(dim(rcsv_mon),7))
+# x[,,1] <- a
+
 
 #------------------------------------eps estimate month-----------------------
 rcsv <- NULL
@@ -113,3 +116,7 @@ addTA(ma_3,on=1,col="yellow")
 # colSums(rcsv_mon)
 # a[is.na(a)] <- 0
 # is.na(a)
+
+ # x <- array(1:30, c(5,2,3))
+x <- array(NA, c(dim(rcsv_mon),7))
+x[,,1] <- a

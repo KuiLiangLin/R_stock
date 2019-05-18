@@ -84,6 +84,6 @@ x[,,1] <- a
 source("estimate.R");   monthly_all <- monthly_data_fecth(108)
 
 for(x_name in c(stock_list[1:4])){
-monthly_data <- xts(as.numeric(monthly_all[-1,grepl(x_name,monthly_all[1,])]), order.by = as.Date(as.numeric(monthly_all[-1,1])))
-chartSeries(monthly_data, name = monthly_all[1,grepl(x_name,monthly_all[1,])],theme="black")
+  monthly_data <- xts(as.numeric(monthly_all[-1,grepl(x_name,monthly_all[1,])]), order.by = as.Date(as.numeric(monthly_all[-1,1])))
+  chartSeries(monthly_data, name = monthly_all[1,grepl(x_name,monthly_all[1,])],theme="black")
 }

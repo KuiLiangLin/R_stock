@@ -117,7 +117,10 @@ update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
   stockno <- c("1101")
   date_1 <- c("20000101")
   sh_pee <- NULL
-  daily_data <- NULL
+  daily_data_1 <- NULL
+  daily_data_2 <- NULL
+  daily_data_3 <- NULL
+  
   for(stockno in stock_n_list){
     cat("  Doing stockno", stockno, "\n")
     ttime <- as.character(as.integer(as.POSIXct(Sys.time()))*100)
@@ -139,14 +142,30 @@ update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
       source("func.R"); sh_pe <- show_percet_len(sh_pe, date_1, date_set)
     }
     # colnames(historyStock) <- c("Date", "Volume", "Value", "Close")         
-    source("func.R"); historyStock[, 1] <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
+    # source("func.R"); historyStock[, 1] <- year_change_108_to_2019( as.Date(historyStock[, 1]) )
     historyStock[,2] <- as.numeric(gsub(',', replacement = '', historyStock[,2]))         
     historyStock[,3] <- as.numeric(gsub(',', replacement = '', historyStock[,3]))      
     historyStock[,4] <- round(historyStock[,3] / historyStock[,2], 2)         
     
-    historyStock <- rbind(c("nono", "Volume", "Value", "Price"), historyStock)
-    colnames(historyStock) <- c("Date", paste0(stockno,"_vo"), paste0(stockno,"_va"), paste0(stockno,"_pr"))         
-    if(is.null(daily_data)){daily_data <- historyStock}else{daily_data <- merge(daily_data, historyStock,  by="Date", all = TRUE)}
+    # historyStock <- rbind(c("nono", "Volume", "Value", "Price"), historyStock)
+    # colnames(historyStock) <- c("Date", paste0(stockno,"_vo"), paste0(stockno,"_va"), paste0(stockno,"_pr"))         
+    # if(is.null(daily_data)){daily_data <- historyStock}else{daily_data <- merge(daily_data, historyStock,  by="Date", all = TRUE)}
+    
+    historyStock_1 <- cbind(historyStock[,1], historyStock[,2])
+    historyStock_2 <- cbind(historyStock[,1], historyStock[,3])
+    historyStock_3 <- cbind(historyStock[,1], historyStock[,4])
+    colnames(historyStock_1) <- c("Date", paste0(stockno))   
+    colnames(historyStock_2) <- c("Date", paste0(stockno))
+    colnames(historyStock_3) <- c("Date", paste0(stockno))
+    # source("func.R"); historyStock_1[, 1] <- year_change_108_to_2019( as.Date(historyStock_1[, 1]) )
+    
+    if(is.null(daily_data_1)){daily_data_1 <- historyStock_1}else{daily_data_1 <- merge(daily_data_1, historyStock_1,  by="Date", all = TRUE)}
+    if(is.null(daily_data_2)){daily_data_2 <- historyStock_2}else{daily_data_2 <- merge(daily_data_2, historyStock_2,  by="Date", all = TRUE)}
+    if(is.null(daily_data_3)){daily_data_3 <- historyStock_3}else{daily_data_3 <- merge(daily_data_3, historyStock_3,  by="Date", all = TRUE)}
+    stock_data_1 <- xts(daily_data_1[, -1], order.by = year_change_108_to_2019( as.Date(daily_data_1[, 1]))) 
+    stock_data_2 <- xts(daily_data_2[, -1], order.by = year_change_108_to_2019( as.Date(daily_data_2[, 1]))) 
+    stock_data_3 <- xts(daily_data_3[, -1], order.by = year_change_108_to_2019( as.Date(daily_data_3[, 1]))) 
+    
     
     source("func.R"); sh_pee <- show_percet_len(sh_pee, stockno, stock_n_list)
   }  
@@ -163,30 +182,60 @@ update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
 
     
     
-    file_name <- paste0(file_path, stockno,".csv")
+    file_name <- paste0(file_path,"Volumn.csv")
     if(file.exists(file_name)){
       ############### read files ############################
-      source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
-      
+      rcsv <- read.csv(file_name)
+      # colnames(rcsv) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value") 
+      rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1]))
       ############### update files ############################
-      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data, historyStock)
-      
+      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data_1, daily_data_1)
       ############### write files ############################
-      # write.zoo(update_rcsv, file = file_name, sep=",")
       sink(file = file_name, append = TRUE)
       write.table(update_rcsv, file = file_name, sep=",", row.names = FALSE, col.names = FALSE,append = TRUE)
       sink()
-      
     } else{
       ############### write files ############################
-      # write.zoo(stock_data, file = file_name, sep=",")
       sink(file = file_name, append = FALSE)
-      write.table(historyStock, file = file_name, sep=",", row.names = FALSE, append = FALSE)
+      write.table(daily_data_1, file = file_name, sep=",", row.names = FALSE, append = FALSE)
       sink()
     }
     
+    file_name <- paste0(file_path,"Value.csv")
+    if(file.exists(file_name)){
+      ############### read files ############################
+      source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
+      ############### update files ############################
+      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data_2, daily_data_2)
+      ############### write files ############################
+      sink(file = file_name, append = TRUE)
+      write.table(update_rcsv, file = file_name, sep=",", row.names = FALSE, col.names = FALSE,append = TRUE)
+      sink()
+    } else{
+      ############### write files ############################
+      sink(file = file_name, append = FALSE)
+      write.table(daily_data_2, file = file_name, sep=",", row.names = FALSE, append = FALSE)
+      sink()
+    }    
+    
+    file_name <- paste0(file_path,"Price.csv")
+    if(file.exists(file_name)){
+      ############### read files ############################
+      source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
+      ############### update files ############################
+      source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data_3, daily_data_3)
+      ############### write files ############################
+      sink(file = file_name, append = TRUE)
+      write.table(update_rcsv, file = file_name, sep=",", row.names = FALSE, col.names = FALSE,append = TRUE)
+      sink()
+    } else{
+      ############### write files ############################
+      sink(file = file_name, append = FALSE)
+      write.table(daily_data_3, file = file_name, sep=",", row.names = FALSE, append = FALSE)
+      sink()
+    }    
 
-  rm(sh_pee, stockno, sh_pe, stock_data, file_name)
-  rm(tmpStock, jsondata, date_1, ttime, url_1, historyStock)
+  # rm(sh_pee, stockno, sh_pe, stock_data, file_name)
+  # rm(tmpStock, jsondata, date_1, ttime, url_1, historyStock)
   cat("All Done\n")
 }

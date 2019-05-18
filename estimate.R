@@ -16,7 +16,6 @@ monthly_data_fecth <- function(yearr) {
     }
   }
 
-  
   rcsv_mon <- rcsv; 
   rcsv_mon[length(rcsv_mon[,1]),1] <- "Total"
   for(x in c(2:length(rcsv_mon[1,]))){

@@ -81,45 +81,9 @@ x[,,1] <- a
 
 
 #------------------------------------eps estimate month-----------------------
-rcsv <- NULL
-for(y in c(100:108)){#99~108
-  for(mo in c(1:12)){#1~4
-    if(mo <= 9){file_name_mon <- paste0(y,"0",mo)}else{file_name_mon <- paste0(y,mo)}
-    file_name_wr <- paste0(paste0(getwd(), "/data_MON/"), file_name_mon,".csv")
-    rcsv_tmp <- read.csv(file_name_wr)
-    rcsv_tmp <- rcsv_tmp[!duplicated(rcsv_tmp),]
-    colnames(rcsv_tmp) <- c("no", paste0(file_name_mon, "01"))
-    if(is.null(rcsv)){rcsv <- rcsv_tmp}else{rcsv <- merge(rcsv_tmp, rcsv, by="no", all = TRUE)}
-    cat(y,mo,";")
-  }
-};
-rcsv_mon <- rcsv; 
-rcsv_mon[length(rcsv_mon[,1]),1] <- "Total"
-for(x in c(2:length(rcsv_mon[1,]))){
-  bbb<-rcsv_mon[,x]
-  rcsv_mon[length(rcsv_mon[,x]),x] <- sum(bbb[!is.na(bbb)])
+source("estimate.R");   monthly_all <- monthly_data_fecth(108)
+
+for(x_name in c(stock_list[1:4])){
+monthly_data <- xts(as.numeric(monthly_all[-1,grepl(x_name,monthly_all[1,])]), order.by = as.Date(as.numeric(monthly_all[-1,1])))
+chartSeries(monthly_data, name = monthly_all[1,grepl(x_name,monthly_all[1,])],theme="black")
 }
-a[is.na(a)] <- 0
-a <- t(rcsv_mon)
-a[,1] <- as.numeric(row.names(a))
-source("func.R"); a[-1,1] <- year_change_108_to_2019(as.numeric(a[-1,1]) )
-# b <- a[-1,grepl("1101",a[1,])]
-stock_data <- xts(as.numeric(a[-1,2]), order.by = as.Date(as.numeric(a[-1,1])))
-stock_data <- xts(as.numeric(a[-1,grepl("Total",a[1,])]), order.by = as.Date(as.numeric(a[-1,1])))
-
-rm(rcsv_tmp, file_name_mon, file_name_wr, rcsv_tmp, mo, y, rcsv, da, ye)
-chartSeries(stock_data, name = a[1,grepl("Total",a[1,])],theme="black")
-
-ma_3<-runMean(stock_data,n=3)
-addTA(ma_3,on=1,col="yellow")
-
-# subset(df, V1=="1101")
-# complete.cases(df)
-# a[!is.na(a)]
-# colSums(rcsv_mon)
-# a[is.na(a)] <- 0
-# is.na(a)
-
- # x <- array(1:30, c(5,2,3))
-
-

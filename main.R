@@ -87,3 +87,21 @@ for(x_name in c(stock_list[1:4])){
   monthly_data <- xts(as.numeric(monthly_all[-1,grepl(x_name,monthly_all[1,])]), order.by = as.Date(as.numeric(monthly_all[-1,1])))
   chartSeries(monthly_data, name = monthly_all[1,grepl(x_name,monthly_all[1,])],theme="black")
 }
+# 
+# library(xlsx)#need to download java
+# install.packages('xlsx')
+# write.xlsx(dataframe1, file="filename.xlsx", sheetName="sheet1")
+# write.xlsx(dataframe2, file="filename.xlsx", sheetName="sheet2", append=TRUE)
+# 
+# Sys.setenv(JAVA_HOME='D:\\Java\\jdk-12.0.1')
+# 
+# library(XLConnect)
+# install.packages("XLConnect")
+# loadWorkbook(file_name)
+# getSheets(file_name)
+# writeWorksheet(workbook, data, worksheet)
+# saveWorkbook(workbook, name of new workbook)
+
+
+
+

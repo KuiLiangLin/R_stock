@@ -3,6 +3,7 @@ library(quantmod)
 library(lubridate)
 library(jsonlite)
 library(rvest)
+library(magrittr)
 
 #------------------------------------daily data DOHLCV ----------------------------------------------
  source("func.R"); stock_list <- get_stock_num_list("20190429")
@@ -12,7 +13,7 @@ library(rvest)
  # file_name <- paste0(file_path, stock_list[4],".csv")
  if(dir.exists(file_path) == FALSE){ dir.create(file_path)}
  # source("DOHLCV.R"); update_DOHLCV(date_set[1:4], stock_list[1:4], file_path)
- source("DOHLCV.R"); update_DOHLCV_simplify(date_set[1:4], stock_list[1:4], file_path)
+ source("DOHLCV.R"); update_DOHLCV_simplify(date_set[1:12], stock_list[1:20], file_path)
  
  # source("func.R"); rcsv_xts <- read_csv_to_xts(file_name)
 
@@ -88,6 +89,7 @@ for(x_name in c(stock_list[1:4])){
   chartSeries(monthly_data, name = monthly_all[1,grepl(x_name,monthly_all[1,])],theme="black")
 }
 # 
+# library(rJava)
 # library(xlsx)#need to download java
 # install.packages('xlsx')
 # write.xlsx(dataframe1, file="filename.xlsx", sheetName="sheet1")

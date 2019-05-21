@@ -114,8 +114,8 @@ update_DOHLCV <- function(date_set, stock_n_list, file_path) {
 ###############update_DOHLCV_simplify <- function(x) {############################
 update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
   file_path <- paste0(getwd(), "/data_DOHLCV/")
-  stockno <- c("1101")
-  date_1 <- c("20000101")
+  # stockno <- c("1101")
+  # date_1 <- c("20100101")
   sh_pee <- NULL
   daily_data_1 <- NULL
   daily_data_2 <- NULL
@@ -158,7 +158,7 @@ update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
     colnames(historyStock_2) <- c("Date", paste0(stockno))
     colnames(historyStock_3) <- c("Date", paste0(stockno))
     # source("func.R"); historyStock_1[, 1] <- year_change_108_to_2019( as.Date(historyStock_1[, 1]) )
-    
+    source("func.R")
     if(is.null(daily_data_1)){daily_data_1 <- historyStock_1}else{daily_data_1 <- merge(daily_data_1, historyStock_1,  by="Date", all = TRUE)}
     if(is.null(daily_data_2)){daily_data_2 <- historyStock_2}else{daily_data_2 <- merge(daily_data_2, historyStock_2,  by="Date", all = TRUE)}
     if(is.null(daily_data_3)){daily_data_3 <- historyStock_3}else{daily_data_3 <- merge(daily_data_3, historyStock_3,  by="Date", all = TRUE)}
@@ -180,14 +180,19 @@ update_DOHLCV_simplify <- function(date_set, stock_n_list, file_path) {
     # lines(historyStock[, 1],historyStock$Close)
     # 
 
-    
-    
+
     file_name <- paste0(file_path,"Volumn.csv")
     if(file.exists(file_name)){
       ############### read files ############################
       rcsv <- read.csv(file_name)
       # colnames(rcsv) <- c("Date", "Open", "High", "Low", "Close", "Volume", "Value") 
-      rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1]))
+      colnames(rcsv) <- gsub('X1', replacement = '',colnames(rcsv))
+      # rcsv <- xts(rcsv[, -1], order.by = as.Date(rcsv[, 1]))
+      a <- merge(rcsv%>%data.frame, daily_data_1%>%data.frame, all=TRUE)
+      a%<>%t
+      a[is.na(a)] <- 0
+      a%<>%t
+      colnames(a) %<>% gsub('X', replacement = '',.)
       ############### update files ############################
       source("func.R"); update_rcsv <- xts_update(rcsv_xts, stock_data_1, daily_data_1)
       ############### write files ############################

@@ -67,15 +67,41 @@ rcsv <- read.csv(file_name_mon)
 
 #------------------------------------eps estimate season-----------------------
 rcsv <- NULL
-for(y in c(99:108)){#99~108
-  for(z in c(1:4)){#1~4
+for(y in c(99:99)){#99~108
+  for(z in c(1:1)){#1~4
     file_name_wr <- paste0(paste0(getwd(), "/data_SEASON/"), paste0(y,"0",z),".csv")
     rcsv_tmp <- read.csv(file_name_wr)
     # rcsv <- rbind(rcsv, rcsv_tmp[1:length(rcsv_tmp$V1),1:20])
     # tmp_sea <- as.character(rcsv$V1[1]);tmp_sea
+    
     cat(y,z,";")
   }
-}
+}    
+    rcsv_tmp%<>%t%>%t
+    a <- cbind(
+       rcsv_tmp[-1, grepl("公司代號",rcsv_tmp[1,])] # stock no
+      ,rcsv_tmp[-1, grepl("營業收入",rcsv_tmp[1,])] # operating revenue
+      ,rcsv_tmp[-1, grepl("營業成本",rcsv_tmp[1,])] # operating costs
+      ,rcsv_tmp[-1, grepl("營業毛利",rcsv_tmp[1,])] # operating gross profit
+      ,rcsv_tmp[-1, grepl("營業費用",rcsv_tmp[1,])] # operating expenses
+      ,rcsv_tmp[-1, grepl("營業淨利",rcsv_tmp[1,])] # operating net profit
+      ,rcsv_tmp[-1, grepl("營業外收入及利益",rcsv_tmp[1,])] # not operating revenue
+      ,rcsv_tmp[-1, grepl("營業外費用及損失",rcsv_tmp[1,])] # not operating expenses
+      ,rcsv_tmp[-1, grepl("本期淨利",rcsv_tmp[1,])] # income after tax
+      ,rcsv_tmp[-1, grepl("基本每股盈餘",rcsv_tmp[1,])] # eps
+    )
+#    colnames(a) <- c("公司代號","營業收入","營業成本","營業毛利","營業費用","營業淨利",
+#                     "營業外收入及利益","營業外費用及損失","本期淨利","基本每股盈餘")
+    colnames(a) <- c("stock","revenue","costs","gross profit","expenses","net profit",
+                     "not operating revenue","not operating expenses","income after tax","eps")
+    a[-1, grepl("stock no",colnames(a))]
+    a%<>%t
+    b <- a[,grepl("1101",a[1,])] %>% cbind
+    
+    
+    
+    
+    
 
 x <- array(NA, c(dim(rcsv_mon),7))
 x[,,1] <- a

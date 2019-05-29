@@ -67,45 +67,93 @@ rcsv <- read.csv(file_name_mon)
 
 #------------------------------------eps estimate season-----------------------
 rcsv <- NULL
-for(y in c(99:99)){#99~108
-  for(z in c(1:1)){#1~4
+q1 <- list()
+q2 <- list()
+q3 <- list()
+q4 <- list()
+for(y in c(99:108)){#99~108
+  for(z in c(1:4)){#1~4
     file_name_wr <- paste0(paste0(getwd(), "/data_SEASON/"), paste0(y,"0",z),".csv")
+    if(file.exists(file_name_wr)==FALSE){break}
     rcsv_tmp <- read.csv(file_name_wr)
     # rcsv <- rbind(rcsv, rcsv_tmp[1:length(rcsv_tmp$V1),1:20])
     # tmp_sea <- as.character(rcsv$V1[1]);tmp_sea
+
+    rcsv_tmp%<>%t%>%t    
+    if(y <= 101){
+      a <- cbind(
+         rcsv_tmp[-1, grepl("公司代號",rcsv_tmp[1,])] # stock no
+        ,rcsv_tmp[-1, grepl("營業收入",rcsv_tmp[1,])] # operating revenue
+        ,rcsv_tmp[-1, grepl("營業成本",rcsv_tmp[1,])] # operating costs
+        ,rcsv_tmp[-1, grepl("營業毛利",rcsv_tmp[1,])] # operating gross profit
+        ,rcsv_tmp[-1, grepl("營業費用",rcsv_tmp[1,])] # operating expenses
+        ,rcsv_tmp[-1, grepl("營業淨利",rcsv_tmp[1,])] # operating net profit
+        ,rcsv_tmp[-1, grepl("營業外收入及利益",rcsv_tmp[1,])] # not operating revenue
+        ,rcsv_tmp[-1, grepl("營業外費用及損失",rcsv_tmp[1,])] # not operating expenses
+        ,rcsv_tmp[-1, grepl("本期淨利",rcsv_tmp[1,])] # income after tax
+        ,rcsv_tmp[-1, grepl("基本每股盈餘",rcsv_tmp[1,])] # eps
+      )
+    } else if(y <= 105) {
+      a <- cbind(
+         rcsv_tmp[,1]
+        ,rcsv_tmp[,3]
+        ,rcsv_tmp[,4]
+        ,rcsv_tmp[,5]
+        ,rcsv_tmp[,9]
+        ,rcsv_tmp[,11]
+        ,rcsv_tmp[,12]
+        ,rcsv_tmp[,18]
+        ,rcsv_tmp[,28]
+      )
+    } else if (y <= 106) {
+      a <- cbind(
+         rcsv_tmp[,1]
+        ,rcsv_tmp[,3]
+        ,rcsv_tmp[,4]
+        ,rcsv_tmp[,5]
+        ,rcsv_tmp[,11]
+        ,rcsv_tmp[,13]
+        ,rcsv_tmp[,14]
+        ,rcsv_tmp[,20]
+        ,rcsv_tmp[,30]
+      )
+    } else {
+      a <- cbind(
+        rcsv_tmp[,1]
+        ,rcsv_tmp[,3]
+        ,rcsv_tmp[,4]
+        ,rcsv_tmp[,6]
+        ,rcsv_tmp[,11]
+        ,rcsv_tmp[,13]
+        ,rcsv_tmp[,14]
+        ,rcsv_tmp[,20]
+        ,rcsv_tmp[,30]
+      )
+    }
+    
+    if(y <= 101){}else{a <- a[-1,]}
+    if(y <= 101){
+      colnames(a) <- c("stock","revenue","costs","gross profit","expenses","net profit",
+                       "not operating revenue","not operating expenses","income after tax","eps")
+    }else{
+      colnames(a) <- c("stock","revenue","costs","gross profit","expenses","net profit",
+                       "not operating income","income after tax","eps")
+    }
+    a[-1, grepl("stock no",colnames(a))]
+    
+   
+    if(z==1){ q1[[y-98]] <- a}
+    if(z==2){ q2[[y-98]] <- a}
+    if(z==3){ q3[[y-98]] <- a}
+    if(z==4){ q4[[y-98]] <- a}
     
     cat(y,z,";")
   }
-}    
-    rcsv_tmp%<>%t%>%t
-    a <- cbind(
-       rcsv_tmp[-1, grepl("公司代號",rcsv_tmp[1,])] # stock no
-      ,rcsv_tmp[-1, grepl("營業收入",rcsv_tmp[1,])] # operating revenue
-      ,rcsv_tmp[-1, grepl("營業成本",rcsv_tmp[1,])] # operating costs
-      ,rcsv_tmp[-1, grepl("營業毛利",rcsv_tmp[1,])] # operating gross profit
-      ,rcsv_tmp[-1, grepl("營業費用",rcsv_tmp[1,])] # operating expenses
-      ,rcsv_tmp[-1, grepl("營業淨利",rcsv_tmp[1,])] # operating net profit
-      ,rcsv_tmp[-1, grepl("營業外收入及利益",rcsv_tmp[1,])] # not operating revenue
-      ,rcsv_tmp[-1, grepl("營業外費用及損失",rcsv_tmp[1,])] # not operating expenses
-      ,rcsv_tmp[-1, grepl("本期淨利",rcsv_tmp[1,])] # income after tax
-      ,rcsv_tmp[-1, grepl("基本每股盈餘",rcsv_tmp[1,])] # eps
-    )
-#    colnames(a) <- c("公司代號","營業收入","營業成本","營業毛利","營業費用","營業淨利",
-#                     "營業外收入及利益","營業外費用及損失","本期淨利","基本每股盈餘")
-    colnames(a) <- c("stock","revenue","costs","gross profit","expenses","net profit",
-                     "not operating revenue","not operating expenses","income after tax","eps")
-    a[-1, grepl("stock no",colnames(a))]
-    a%<>%t
-    b <- a[,grepl("1101",a[1,])] %>% cbind
+}     
+tt <- q1[[9]][,] %>% t
+b <- tt[,grepl("1101",tt[1,])] %>% cbind 
     
-    
-    
-    
-    
-
-x <- array(NA, c(dim(rcsv_mon),7))
-x[,,1] <- a
-
+  
 
 #------------------------------------eps estimate month-----------------------
 source("estimate.R");   monthly_all <- monthly_data_fecth(108)
